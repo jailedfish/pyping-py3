@@ -80,12 +80,11 @@ def is_valid_ip4_address(addr):
     parts = addr.split(".")
     if not len(parts) == 4:
         return False
+    part: str
     for part in parts:
-        try:
-            number = int(part)
-        except ValueError:
+        if not (part_int := part.isdigit()):
             return False
-        if number > 255 or number < 0:
+        if part_int not in range(0, 256):
             return False
     return True
 
@@ -107,6 +106,16 @@ class Response(object):
         self.timeout = None
         self.destination = None
         self.destination_ip = None
+    def __str__(self):
+        return (f'Response of {self.destination_ip}. '
+                f'Min/Avg/Max rtt: {self.min_rtt}/{self.avg_rtt}/{self.max_rtt}, '
+                f'pl: {self.packet_lost}')
+
+
+class UnknownHostError(Exception):
+    def __init__(self):
+        super()
+
 
 class Ping(object):
     def __init__(self, destination, timeout=1000, packet_size=55, own_id=None, quiet_output=True, udp=False, bind=None):
@@ -162,7 +171,7 @@ class Ping(object):
         else:
             print(msg)
 
-        raise Exception("unknown_host")
+        raise UnknownHostError()
         #sys.exit(-1)
 
     def print_success(self, delay, ip, packet_size, ip_header, icmp_header):
