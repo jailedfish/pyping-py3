@@ -9,7 +9,7 @@ debug = False
 
 def usage():
 	with indent(1, quote=' '):
-		puts('Usage: pyping [destination] [options]')
+		puts('Usage: pyping-py3-py3 [destination] [options]')
 		print
 		puts('Options')
 		with indent(2, quote=' '):
